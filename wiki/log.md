@@ -7,3 +7,7 @@ Pages updated: index
 ## [2026-10-22] update | Design spec approved decisions D1–D7
 Pages created: decisions/data-normalization, decisions/sink-definition, decisions/route-definition
 Pages updated: index
+
+## [2026-10-22] update | Persona/JTBD + progressive rendering (D8–D10)
+Pages created: decisions/progressive-rendering
+Pages updated: index

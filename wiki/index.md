@@ -14,3 +14,4 @@ _(filled after the design is approved)_
 - [Data normalization](pages/decisions/data-normalization.md) — how raw-JSON quirks are fixed at load
 - [Sink definition](pages/decisions/sink-definition.md) — sink = kind rds (SQS excluded)
 - [Route definition](pages/decisions/route-definition.md) — maximal entry→terminal paths; why AND of all 3 filters is empty
+- [Progressive rendering](pages/decisions/progressive-rendering.md) — AppSec persona, risk-first overview, stateless node expansion for vis-network
