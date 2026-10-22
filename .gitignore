@@ -5,3 +5,4 @@ coverage/
 .nx/workspace-data
 
 vite.config.*.timestamp*
+tmp/
