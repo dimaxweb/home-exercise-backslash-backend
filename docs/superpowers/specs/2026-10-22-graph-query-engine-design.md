@@ -84,13 +84,13 @@ interface ViewNode extends GraphNode {
   label: string;                           // = id
   group: string;                           // = kind (vis styling hook)
   risk: { public: boolean; vulnerable: boolean; maxSeverity: string | null; sink: boolean };
-  hidden: { in: number; out: number };     // neighbors NOT in this response → UI shows an "expand (+n)" badge
+  hidden: { in: number; out: number };     // edges of this node NOT in this response → UI shows an "expand (+n)" badge
 }
 interface GraphView { nodes: ViewNode[]; edges: GraphEdge[] }
 ```
 
 `hidden` is relative to the response it appears in. It is computed by one pure function:
-`toView(graph, nodeIds, edgeIds): GraphView`. Every endpoint goes through it.
+`toView(graph, nodeIds, edges): GraphView`. Edge endpoints are always included. Every endpoint goes through it.
 
 ## 6. Filter mechanism (the extensibility point)
 
@@ -127,7 +127,7 @@ Engine: `queryRoutes(graph, routes, filters, match)` keeps the routes where `fil
 4. Edges = the edges along the included routes. Seeds without included routes appear without edges.
 5. `toView(...)` adds `hidden` counts.
 
-Default `maxNodes = 50`. Valid range: 1–500. On this data the overview has 26 of 47 nodes, from 60 of 222 routes,
+Default `maxNodes = 50`. Valid range: 1–500. On this data the overview has 25 of 47 nodes and 42 edges, from 60 of 222 routes,
 with `truncated: false`.
 
 ### `expandNode(graph, id, direction): GraphView`

@@ -18,7 +18,7 @@ data, so I fix those first."* The three filters form an attack path: public entr
   response loads straight into a vis `DataSet` (D8).
 - The first screen is `GET /graph/overview`. It contains vulnerable nodes, public entries, sinks, and the
   `has-vulnerability` routes, capped by `maxNodes` (default 50). The priority is vulnerable > public > sink (D10).
-- Every node carries `hidden: { in, out }`, the number of neighbors not in the response. The UI uses it to draw expand
+- Every node carries `hidden: { in, out }`, the number of its edges not in the response. The UI uses it to draw expand
   badges.
 - Expansion is `GET /nodes/:id/neighbors` and is **stateless**. The client merges results by id, and the server keeps
   no record of what a client has (D9).
@@ -32,7 +32,7 @@ data, so I fix those first."* The three filters form an attack path: public entr
 
 ## Data facts
 
-The graph has 47 nodes and 98 edges, so it renders fine in full. The overview has 26 nodes, from 60 of 222 routes.
+The graph has 47 nodes and 98 edges, so it renders fine in full. The overview has 25 nodes and 42 edges, from 60 of 222 routes.
 Both vulnerable services (`order-service`, `auth-service`) reach `prod-postgresdb`. Neither public node reaches a
 vulnerable service, because `gateway-service` has no edges.
 
