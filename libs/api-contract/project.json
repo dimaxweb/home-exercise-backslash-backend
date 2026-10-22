@@ -1,0 +1,32 @@
+{
+  "name": "api-contract",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api-contract/src",
+  "projectType": "library",
+  "tags": [
+    "scope:shared",
+    "type:util"
+  ],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "options": {
+        "commands": [
+          "tsc --noEmit -p libs/api-contract/tsconfig.lib.json",
+          "tsc --noEmit -p libs/api-contract/tsconfig.spec.json"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "options": {
+        "passWithNoTests": true
+      }
+    }
+  }
+}

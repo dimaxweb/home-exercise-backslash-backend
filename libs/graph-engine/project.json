@@ -1,0 +1,27 @@
+{
+  "name": "graph-engine",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/graph-engine/src",
+  "projectType": "library",
+  "tags": [
+    "scope:api",
+    "type:feature"
+  ],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "options": {
+        "commands": [
+          "tsc --noEmit -p libs/graph-engine/tsconfig.lib.json",
+          "tsc --noEmit -p libs/graph-engine/tsconfig.spec.json"
+        ],
+        "parallel": false
+      }
+    }
+  }
+}
