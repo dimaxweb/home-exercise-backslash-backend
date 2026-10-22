@@ -10,6 +10,7 @@
 
 ## API
 - [Route filters](pages/api/filters.md) — RouteFilter contract, built-ins, all/any, how to add a filter
+- [REST endpoints](pages/api/endpoints.md) — endpoint table, response shapes, error codes
 
 ## Decisions
 - [Data normalization](pages/decisions/data-normalization.md) — how raw-JSON quirks are fixed at load

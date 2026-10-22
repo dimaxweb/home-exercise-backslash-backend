@@ -25,3 +25,8 @@ Pages updated: index
 ## [2026-10-22] update | G4 views
 Built: toView (vis fields, risk, hidden counts), viewOfRoutes, buildOverview, expandNode.
 Pages updated: architecture/overview
+
+## [2026-10-22] update | G5 HTTP API
+Built: zod query schemas, createApp (Express, CORS, JSON 404/500), createEngine, main. Verified by hand: 47 nodes, 98 edges, 222 routes; overview 25 nodes / 42 edges.
+Pages created: api/endpoints
+Pages updated: index
