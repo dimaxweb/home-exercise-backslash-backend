@@ -2,7 +2,7 @@
 title: REST endpoints
 category: api
 tags: [api, rest, vis-network]
-sources: [src/api/app.ts, src/api/query-schemas.ts, docs/superpowers/specs/2026-10-22-graph-query-engine-design.md]
+sources: [apps/api/src/api/app.ts, apps/api/src/api/query-schemas.ts, libs/api-contract/src/lib/responses.ts, docs/superpowers/specs/2026-10-22-graph-query-engine-design.md]
 updated: 2026-10-22
 ---
 
@@ -20,6 +20,10 @@ updated: 2026-10-22
 `filters` accepts both `a,b` and the repeated form `filters=a&filters=b`. Names are trimmed and deduped.
 
 ## Shapes
+
+Every response body is typed with `libs/api-contract` (`OverviewResponse`, `RoutesResponse`, `FilterInfo`,
+`ApiError`), so the web client and the api share one definition.
+
 
 - `GraphView = { nodes: ViewNode[], edges: { id, from, to }[] }`. A `ViewNode` is the normalized node plus
   `label`, `group`, `risk` and `hidden` (see [[overview]] → Views).
@@ -40,5 +44,6 @@ updated: 2026-10-22
 
 ## Server
 
-`npm start` serves on `PORT` (default 3000) and loads `GRAPH_FILE` (default `data/train-ticket-be.json`). Load
+`npx nx serve api` (or `npm run dev` with the UI) serves on `PORT` (default 3000). `npm start` runs the built
+`dist/apps/api/main.js`. Both load `GRAPH_FILE` (default `<cwd>/data/train-ticket-be.json`). Load
 warnings are printed with the prefix `[load-graph]`.

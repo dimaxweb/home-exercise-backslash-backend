@@ -1,4 +1,4 @@
-/** Shapes shared by the api and the web client. Types and `as const` sets only, no runtime logic. */
+/** Shapes shared by the api and the web client: types, `as const` sets and id formats. No business logic. */
 
 export const NodeKind = { Service: 'service', Rds: 'rds', Sqs: 'sqs' } as const;
 
@@ -29,6 +29,9 @@ export interface GraphEdge {
   from: string;
   to: string;
 }
+
+/** Edge id format, shared so the client can address edges of a route. */
+export const edgeId = (from: string, to: string): string => `${from}->${to}`;
 
 export interface NodeRisk {
   public: boolean;

@@ -2,7 +2,7 @@
 title: Route filters
 category: api
 tags: [filters, extensibility, query]
-sources: [src/filters/types.ts, src/filters/built-in.ts, src/query/query-routes.ts]
+sources: [libs/graph-engine/src/filters/types.ts, libs/graph-engine/src/filters/built-in.ts, libs/graph-engine/src/query/query-routes.ts]
 updated: 2026-10-22
 ---
 
@@ -34,8 +34,9 @@ interface RouteFilter {
 
 ## Adding a filter
 
-1. Write a `RouteFilter` object, for example in `src/filters/built-in.ts`.
+1. Write a `RouteFilter` object, for example in `libs/graph-engine/src/filters/built-in.ts`.
 2. `.register()` it in `defaultRegistry()`.
 
 You don't touch the engine, controller or validation: the API resolves names through the registry, and
-`GET /filters` and the 400 `validFilters` list pick the new filter up automatically.
+`GET /filters`, the 400 `validFilters` list and the UI filter bar (built from `GET /filters`) pick the new
+filter up automatically.

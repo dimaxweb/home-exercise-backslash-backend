@@ -34,3 +34,8 @@ Pages updated: index
 ## [2026-10-22] update | G6 smoke test + README
 Built: real-data smoke test (all spec numbers match), README.
 Pages updated: domain/graph-data (verified counts), index
+
+## [2026-10-22] update | G7 Nx monorepo + vis-network UI
+Built: Nx workspace (api-contract, graph-engine, api, web), module boundaries, React + vis-network UI with filter bar, node panel, route list, client-side hidden counts.
+Pages created: decisions/monorepo-and-ui
+Pages updated: architecture/overview, api/filters, api/endpoints, index

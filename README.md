@@ -2,7 +2,8 @@
 
 A small, deterministic REST service that loads the Train Ticket microservice graph (`data/train-ticket-be.json`),
 normalizes its quirks, and serves render-ready graphs (vis-network shape `{ nodes, edges }`). It provides a risk-first
-overview, on-demand node expansion, and route queries composed from **pluggable filters**.
+overview, on-demand node expansion, and route queries composed from **pluggable filters**. A React + vis-network UI
+renders it.
 
 **Who it's for (assumption):** an AppSec engineer at a Backslash customer. *"When the scanner flags vulnerabilities,
 show me which ones are reachable and lead to sensitive data, so I fix those first."* The three built-in filters form
@@ -10,15 +11,46 @@ an attack path: **public entry → vulnerable service → sink**.
 
 ## Run
 
-Requires Node 24.
+Requires Node 24. It's an Nx monorepo, and every script runs from the repo root.
 
 ```bash
 npm install
-npm run build
-npm start            # http://localhost:3000. Env: PORT (default 3000), GRAPH_FILE (default data/train-ticket-be.json)
-npm test             # unit + API + real-data smoke tests
-npm run verify       # typecheck + tests + build
+npm run dev          # api on http://localhost:3000 + UI on http://localhost:4200 (open this one)
+npm run verify       # lint + typecheck + tests + build, all projects
+npm test             # unit + API + real-data smoke + UI tests
+npm run build        # dist/apps/api and dist/apps/web
+npm start            # built api only. Env: PORT (default 3000), GRAPH_FILE (default ./data/train-ticket-be.json)
 ```
+
+Single projects: `npx nx serve api`, `npx nx serve web`, `npx nx test graph-engine`. `npx nx preview web` serves
+the production UI build on :4300 with the same API proxy.
+
+### Layout
+
+| Project | Path | Tags | Contents |
+|---|---|---|---|
+| `api-contract` | `libs/api-contract` | `scope:shared`, `type:util` | response types and `as const` sets shared by api and web |
+| `graph-engine` | `libs/graph-engine` | `scope:api`, `type:feature` | pure engine: load/normalize, routes, filters, query, views |
+| `api` | `apps/api` | `scope:api`, `type:app` | thin Express layer + zod query validation |
+| `web` | `apps/web` | `scope:web`, `type:app` | React 19 + vis-network UI, TanStack Query |
+
+`@nx/enforce-module-boundaries` stops `web` from importing the engine or anything in `scope:api`. Both apps share
+only `api-contract`, so a change to a response shape breaks the compile on both sides.
+
+### UI
+
+The UI opens on the risk overview. Fill colour shows severity, public entry points get a thick blue border, sinks are
+drawn as databases, queues as diamonds, and inferred nodes with a dashed border. `+n` under a label counts the
+node's edges that aren't on the canvas.
+
+- Click a node to see its details and vulnerabilities, then expand its callers, callees or both. Double-click a node
+  to expand both directions.
+- In the filter bar, check filters, pick `all` or `any`, then **Show routes**. Click a route in the list to highlight
+  it and zoom to it. **Overview** goes back to the start.
+- **Flow** (left-to-right hierarchy) and **Force** switch the layout.
+
+In dev, the UI calls `/api/*` and Vite proxies that to the api with the prefix stripped (`API_URL` overrides the
+target).
 
 On startup the server logs any load warnings and the graph size:
 
@@ -71,12 +103,15 @@ network.on('doubleClick', ({ nodes: [id] }) =>
 ```
 
 Note: `hidden` is relative to the response that carried it. After several expansions a badge can overstate what is
-still hidden; the client can recompute it from its DataSets.
+still hidden. The bundled UI fixes this (D15). The first time it sees a node, it stores the node's total degree
+(`hidden` + the response edges touching it). From then on the badge is that total minus the edges on the canvas. See
+`apps/web/src/graph/vis-mapping.ts`.
 
 ## Adding a filter
 
-Write a `RouteFilter` and `.register()` it in `defaultRegistry()` (`src/filters/built-in.ts`). The engine, API,
-validation, `GET /filters` and the `validFilters` error list all pick it up without changes.
+Write a `RouteFilter` and `.register()` it in `defaultRegistry()` (`libs/graph-engine/src/filters/built-in.ts`).
+The engine, API, validation, `GET /filters`, the `validFilters` error list and the UI filter bar all pick it up
+without changes.
 
 ```ts
 const longRoute: RouteFilter = {
@@ -108,6 +143,13 @@ See the [design spec §3](docs/superpowers/specs/2026-10-22-graph-query-engine-d
 | D8 | vis-network contract: nodes `{ id, label, group }`, edges `{ id, from, to }`, extra fields pass through |
 | D9 | Progressive loading is stateless: overview + per-node expansion, and the client merges by id |
 | D10 | Overview priority: vulnerable (by severity) → public entry → sink. Decides what survives `maxNodes` |
+| D11 | Nx integrated monorepo: `apps/api`, `apps/web`, `libs/graph-engine`, `libs/api-contract`, with enforced module boundaries |
+| D12 | Backend stays Express + zod; no NestJS migration |
+| D13 | UI: React 19 + vis-network (standalone) + TanStack Query. No router, no global store |
+| D14 | The UI calls `/api/*`; Vite proxies it to the api and strips the prefix |
+| D15 | The client stores each node's total degree, so `+n` stays correct across expansions |
+
+D11–D15 are in the [spec addendum §12](docs/superpowers/specs/2026-10-22-graph-query-engine-design.md#12-addendum-2026-10-22-nx-monorepo--vis-network-ui).
 
 ## Data findings
 
@@ -124,8 +166,12 @@ See the [design spec §3](docs/superpowers/specs/2026-10-22-graph-query-engine-d
 
 ## Limitations / next steps
 
-- The UI itself is not included. The API is shaped for vis-network.
-- No server-side clustering for very large graphs.
-- `hidden` counts are per response, not per client session.
+- No server-side clustering for very large graphs. The UI bundle is about 920 kB minified, mostly vis-network, and Vite
+  warns about the chunk size.
+- `hidden` counts in the API are per response. The bundled UI corrects for this; other clients must do the same (D15).
+- `npm start` serves only the api. In production the UI build (`dist/apps/web`) needs a static host that proxies
+  `/api`, like `nx preview web` does.
+- The UI is tested with unit tests (mapping, degree tracking, API client, filter bar). Canvas interactions were
+  checked by hand in a browser, not by an automated e2e suite.
 - Enumeration starts only at in-degree-0 nodes, so a pure cycle with no entry node yields no routes.
 - No pagination of `/routes`. Path counts can grow exponentially on dense graphs.

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@backslash/api-contract": [
+        "C:/projects/home-exercise-backslash-backend/libs/api-contract/src/index.ts"
+      ],
+      "@backslash/graph-engine": [
+        "C:/projects/home-exercise-backslash-backend/libs/graph-engine/src/index.ts"
+      ],
+      "@backslash/graph-engine/testing": [
+        "C:/projects/home-exercise-backslash-backend/libs/graph-engine/src/testing/index.ts"
+      ]
+    }
+  },
+  "extends": "..\\..\\..\\..\\apps\\api\\tsconfig.app.json"
+}

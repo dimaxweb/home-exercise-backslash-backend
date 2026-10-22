@@ -13,10 +13,12 @@
     "verify": "nx run-many -t lint typecheck test build"
   },
   "dependencies": {
+    "@tanstack/react-query": "5.104.1",
     "express": "4.21.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tslib": "^2.3.0",
+    "vis-network": "10.1.2",
     "zod": "3.23.8"
   },
   "devDependencies": {

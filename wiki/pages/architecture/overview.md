@@ -9,7 +9,7 @@ updated: 2026-10-22
 ## Flow
 
 `load → routes → filters → views → API`. Everything runs once at startup except filters and views, which run per
-request. Only `src/api/` and `src/main.ts` do I/O; everything else is pure.
+request. Only `apps/api` does I/O; `libs/graph-engine` is pure. The monorepo layout is in [[monorepo-and-ui]].
 
 1. **Load** (`graph/load-graph.ts`): zod validates raw JSON, then normalizes it (string `to`, dangling targets,
    defaults, edge dedup; see [[data-normalization]]). It returns `{ graph, warnings }`, so the caller decides whether to log.
@@ -23,16 +23,20 @@ request. Only `src/api/` and `src/main.ts` do I/O; everything else is pure.
 ## Module layout
 
 ```
-src/graph/types.ts       NodeKind, Severity, SINK_KINDS, severityRank, interfaces, edgeId, routeId
-src/graph/node-risk.ts   isSink, isVulnerable, maxSeverity
-src/graph/load-graph.ts  raw schema + normalize
-src/graph/routes.ts      enumerateRoutes, routeEdges
-src/filters/*            RouteFilter, FilterRegistry, built-ins
-src/query/query-routes.ts
-src/view/*               toView, overview, expand
-src/api/*                query schemas, createApp
-src/engine.ts            createEngine(raw): deps + warnings
-src/main.ts              read file, listen
+libs/api-contract/src/lib/graph.ts      NodeKind, Severity, edgeId, GraphNode, GraphEdge, ViewNode, GraphView
+libs/api-contract/src/lib/responses.ts  MatchMode, Direction, OverviewResponse, RoutesResponse, FilterInfo, ApiError
+libs/graph-engine/src/graph/types.ts    SINK_KINDS, severityRank, Graph, Route, routeId (+ re-exports the contract)
+libs/graph-engine/src/graph/node-risk.ts isSink, isVulnerable, maxSeverity
+libs/graph-engine/src/graph/load-graph.ts raw schema + normalize
+libs/graph-engine/src/graph/routes.ts   enumerateRoutes, routeEdges
+libs/graph-engine/src/filters/*         RouteFilter, FilterRegistry, built-ins
+libs/graph-engine/src/query/query-routes.ts
+libs/graph-engine/src/view/*            toView, overview, expand
+libs/graph-engine/src/testing/*         shared test fixture (@backslash/graph-engine/testing)
+apps/api/src/api/*                      query schemas, createApp (typed with api-contract responses)
+apps/api/src/engine.ts                  createEngine(raw): deps + warnings
+apps/api/src/main.ts                    read file, listen
+apps/web/src/*                          React UI, see [[monorepo-and-ui]]
 ```
 
 ## Graph representation
@@ -48,7 +52,7 @@ Every response graph goes through one pure function, `toView(graph, nodeIds, edg
 - adds the vis-network fields `label` (= id) and `group` (= kind), plus `risk: { public, vulnerable, maxSeverity, sink }`;
 - adds `hidden: { in, out }`, the number of the node's graph edges that are **not in this response**. The UI shows
   this count as an "expand (+n)" badge. It is relative to the one response, so after several merges on the client it
-  can overstate what is still hidden.
+  can overstate what is still hidden. The bundled UI corrects for this (D15, [[monorepo-and-ui]]).
 
 `viewOfRoutes` is the union of the nodes and edges of a set of routes. `/routes` uses it.
 

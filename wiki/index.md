@@ -17,3 +17,4 @@
 - [Sink definition](pages/decisions/sink-definition.md) — sink = kind rds (SQS excluded)
 - [Route definition](pages/decisions/route-definition.md) — maximal entry→terminal paths; why AND of all 3 filters is empty
 - [Progressive rendering](pages/decisions/progressive-rendering.md) — AppSec persona, risk-first overview, stateless node expansion for vis-network
+- [Monorepo and UI](pages/decisions/monorepo-and-ui.md) — Nx layout, module boundaries, React + vis-network client, /api proxy, client-side hidden counts (D11–D15)

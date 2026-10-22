@@ -1,6 +1,6 @@
 import { GraphEdge, GraphNode, NodeKind, Severity } from '@backslash/api-contract';
 
-export { NodeKind, Severity } from '@backslash/api-contract';
+export { NodeKind, Severity, edgeId } from '@backslash/api-contract';
 export type { GraphEdge, GraphNode, Vulnerability } from '@backslash/api-contract';
 
 /** Kinds that count as a data sink. `sqs` is a queue, not a sink (decision D2). */
@@ -28,5 +28,4 @@ export interface Graph {
 /** Ordered node ids, entry → terminal. */
 export type Route = string[];
 
-export const edgeId = (from: string, to: string): string => `${from}->${to}`;
 export const routeId = (route: Route): string => route.join('>');
