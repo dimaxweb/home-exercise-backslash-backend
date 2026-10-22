@@ -21,3 +21,7 @@ Pages updated: index
 Built: RouteFilter contract, FilterRegistry, 3 built-ins, queryRoutes (all/any).
 Pages created: api/filters
 Pages updated: index
+
+## [2026-10-22] update | G4 views
+Built: toView (vis fields, risk, hidden counts), viewOfRoutes, buildOverview, expandNode.
+Pages updated: architecture/overview
