@@ -9,7 +9,7 @@
 - [Architecture overview](pages/architecture/overview.md) — module layout and the load → routes → filters → views → API flow
 
 ## API
-_(filled after the design is approved)_
+- [Route filters](pages/api/filters.md) — RouteFilter contract, built-ins, all/any, how to add a filter
 
 ## Decisions
 - [Data normalization](pages/decisions/data-normalization.md) — how raw-JSON quirks are fixed at load

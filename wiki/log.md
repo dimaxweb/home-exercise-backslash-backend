@@ -16,3 +16,8 @@ Pages updated: index
 Built: types, node-risk, load-graph (zod + normalization), route enumeration with cycle guard.
 Pages created: architecture/overview
 Pages updated: index
+
+## [2026-10-22] update | G3 filters
+Built: RouteFilter contract, FilterRegistry, 3 built-ins, queryRoutes (all/any).
+Pages created: api/filters
+Pages updated: index
