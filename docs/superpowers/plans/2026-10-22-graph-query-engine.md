@@ -29,6 +29,7 @@ start a goal until the previous goal's condition holds. Each goal ends with a co
 | G4 | Render views: toView, overview, expand | G4 unit tests are green |
 | G5 | HTTP API + server | API tests are green, `npm start` serves `/graph/overview` |
 | G6 | Real-data verification + README + wiki | Smoke test is green with the spec's numbers, docs are written |
+| G7 | Nx monorepo + vis-network UI | `nx run-many -t lint test build typecheck` is green, `npm run dev` serves api + web |
 
 `npm run verify` = typecheck + all tests + build. Run it at the end of every goal.
 
@@ -1624,6 +1625,45 @@ and smoke.
 git add README.md wiki
 git commit -m "docs: README with API, vis-network usage, decisions and data findings"
 ```
+
+---
+
+## Goal G7: Nx monorepo + vis-network UI (spec §12, D11–D15)
+
+**Done when:** `npx nx run-many -t lint test build typecheck` exits 0; every G2–G6 test still passes from its new
+location with unchanged assertions; `npm run dev` serves the API on :3000 and the UI on :4200; the UI shows the
+25-node overview, expands a node, and runs a filter query.
+
+### Task 7.1: Nx workspace + project skeletons
+- Install `nx@23.3.0` + `@nx/js`, `@nx/node`, `@nx/react`, `@nx/vite`, `@nx/jest`, `@nx/eslint`, `@nx/esbuild` (same version).
+- Generate `libs/api-contract` and `libs/graph-engine` (`@nx/js:lib`, jest), `apps/api` (`@nx/node:app`, esbuild),
+  and `apps/web` (`@nx/react:app`, vite, jest). Tag them `scope:shared|api|web` and `type:util|feature|app`, and add
+  the module-boundary rule.
+- Check: `nx show projects` lists the 4 projects.
+
+### Task 7.2: Move backend code (no behavior change)
+- `src/graph|filters|query|view` and their tests → `libs/graph-engine`. `src/api`, `engine.ts`, `main.ts`, the API
+  test and the smoke test → `apps/api`.
+- Move the response types (`GraphNode`, `Vulnerability`, `GraphEdge`, `NodeRisk`, `ViewNode`, `GraphView`,
+  `NodeKind`, `MatchMode`, `Direction`, plus new `OverviewResponse`, `RoutesResponse`, `FilterInfo`) → `libs/api-contract`.
+  The engine re-uses them rather than redefining them.
+- Default `GRAPH_FILE` = `<cwd>/data/train-ticket-be.json`.
+- Check: all 52 tests pass under `nx run-many -t test`.
+
+### Task 7.3: Web client logic (TDD, pure)
+- `vis-mapping.ts`: `toVisNode(node, hiddenTotal)` (style from risk; no raw-string compares) and
+  `DegreeTracker` (D15). Unit-tested.
+- `api-client.ts`: typed fetchers over `/api/*`, using the `api-contract` types.
+
+### Task 7.4: Web UI
+- `GraphCanvas` (vis-network, DataSet merge, click/double-click), `FilterBar` (RTL-tested), `NodePanel`, `RouteList`,
+  and `App` wired with TanStack Query.
+- Vite proxy `/api` → `:3000`. Root scripts: `dev`, `build`, `test`, `verify`.
+
+### Task 7.5: Verify, docs, wiki
+- `nx run-many -t lint test build typecheck`. Run both servers and check the UI in a browser.
+- README: monorepo layout and how to run the api + web. Wiki: architecture page (monorepo, UI), a decision page for
+  D11–D15, log entry.
 
 ---
 

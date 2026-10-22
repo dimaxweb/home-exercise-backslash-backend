@@ -198,8 +198,26 @@ Everything except `api/` and `main.ts` is pure and has no I/O.
   data findings, and how to add a filter.
 - The wiki is updated with architecture, API, and decisions pages.
 
-## 12. Out of scope (YAGNI)
+## 12. Addendum (2026-10-22): Nx monorepo + vis-network UI
 
-The UI itself, server-side clustering, sessions or "already sent" tracking, persistence, auth, pagination of routes,
+Requested after G1–G6. The design above is unchanged. This section adds packaging and a client.
+
+| # | Decision | Choice |
+|---|---|---|
+| D11 | Repo layout | Nx integrated monorepo. `apps/api` (Express, thin), `apps/web` (React + Vite), `libs/graph-engine` (all the pure code from §9, `scope:api`), `libs/api-contract` (response types + `as const` sets shared by api and web, `scope:shared`). Boundaries are enforced by `@nx/enforce-module-boundaries` |
+| D12 | Backend framework | Stays Express + zod (D1). No NestJS migration, because it is out of budget and adds no behavior |
+| D13 | UI | React 19 + `vis-network` (standalone build, DataSet merge by id). TanStack Query for server state. No routing, no global store |
+| D14 | Dev wiring | The web app calls `/api/*`. Vite proxies `/api` to `localhost:3000` and strips the prefix, so the API URLs don't change. `npm run dev` serves both |
+| D15 | `hidden` on the client | The client stores each node's total degree (`hidden` + edges touching it in the response, captured the first time the node is seen). The badge is `total − edges in the DataSet`, which fixes the per-response staleness noted in §5 |
+
+UI behavior: it loads `/graph/overview` on start. Node style comes from `risk`: vulnerable nodes are filled by
+severity, public nodes get a thick border, sinks use the `database` shape, inferred nodes are dashed. Clicking a node
+opens a details panel (kind, risk, vulnerabilities, Expand in/out/both). Double-clicking expands both directions. A
+filter bar lists `/filters` as checkboxes with an all/any toggle and replaces the canvas with the `/routes` result.
+The route list highlights one route on click. "Reset" returns to the overview.
+
+## 13. Out of scope (YAGNI)
+
+Server-side clustering, sessions or "already sent" tracking, persistence, auth, pagination of routes,
 a node-level query DSL, Docker, and query-time path search between arbitrary nodes. These are listed in the README as
 possible extensions.
