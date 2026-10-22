@@ -30,3 +30,7 @@ Pages updated: architecture/overview
 Built: zod query schemas, createApp (Express, CORS, JSON 404/500), createEngine, main. Verified by hand: 47 nodes, 98 edges, 222 routes; overview 25 nodes / 42 edges.
 Pages created: api/endpoints
 Pages updated: index
+
+## [2026-10-22] update | G6 smoke test + README
+Built: real-data smoke test (all spec numbers match), README.
+Pages updated: domain/graph-data (verified counts), index

@@ -2,7 +2,7 @@
 
 ## Domain
 - [Assignment](pages/domain/assignment.md) — the exercise requirements and deliverables
-- [Train Ticket graph data](pages/domain/graph-data.md) — data shape, counts, sinks, and quirks to normalize
+- [Train Ticket graph data](pages/domain/graph-data.md) — data shape, verified counts, sinks, and quirks to normalize
 
 ## Architecture
 - Design spec: [docs/superpowers/specs/2026-10-22-graph-query-engine-design.md](../docs/superpowers/specs/2026-10-22-graph-query-engine-design.md)

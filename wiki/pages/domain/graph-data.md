@@ -33,6 +33,19 @@ Node fields: `name` (id), `kind`, `language`, `path`, `publicExposed?`, `vulnera
 4. Vulnerability `message` (SQL injection) and `cwe` (Path Traversal) disagree on auth-service — source data issue,
    passed through as-is.
 
+## Verified counts after normalization
+
+Checked by `test/smoke.test.ts` on 2026-10-22:
+
+| | count |
+|---|---|
+| nodes (46 declared + inferred `assurance-service`) | 47 |
+| edges (deduped) | 98 |
+| maximal routes ([[route-definition]]) | 222 |
+| `starts-public` / `ends-in-sink` / `has-vulnerability` | 6 / 30 / 60 |
+| all three ANDed | 0 (`gateway-service` has no edges; `frontend` reaches no vulnerable service) |
+| overview at `maxNodes=50` | 25 nodes, 42 edges, not truncated |
+
 ## Sinks
 
 Assignment says "end in Sink (rds/sql)". Only `rds` exists in data; `sqs` is a queue, not a sink by that definition.
