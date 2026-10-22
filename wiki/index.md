@@ -5,7 +5,8 @@
 - [Train Ticket graph data](pages/domain/graph-data.md) — data shape, counts, sinks, and quirks to normalize
 
 ## Architecture
-- Design spec: [docs/superpowers/specs/2026-10-22-graph-query-engine-design.md](../docs/superpowers/specs/2026-10-22-graph-query-engine-design.md) — pages to be filled during implementation
+- Design spec: [docs/superpowers/specs/2026-10-22-graph-query-engine-design.md](../docs/superpowers/specs/2026-10-22-graph-query-engine-design.md)
+- [Architecture overview](pages/architecture/overview.md) — module layout and the load → routes → filters → views → API flow
 
 ## API
 _(filled after the design is approved)_
